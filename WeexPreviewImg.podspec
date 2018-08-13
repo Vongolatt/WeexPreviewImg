@@ -13,5 +13,6 @@ Pod::Spec.new do |s|
   s.source_files = "Class/*.{h,m,mm}"
   s.dependency 'WeexSDK'
   s.dependency 'MBProgressHUD'
+  s.dependency 'TPKeyboardAvoiding'
   s.requires_arc = true
 end

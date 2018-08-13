@@ -10,7 +10,9 @@
 #import "UIImageView+WebCache.h"
 #import "MBProgressHUD.h"
 #import "PhotoView.h"
+#import "XJCommentListCtrl.h"
 
+#define mSystemVersion   ([[UIDevice currentDevice] systemVersion])
 #define screen_width    [UIScreen mainScreen].bounds.size.width
 #define screen_height   [UIScreen mainScreen].bounds.size.height
 
@@ -38,7 +40,17 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     lastScale = 1.0;
-    self.view.backgroundColor = [UIColor blackColor];
+//    self.view.backgroundColor = [UIColor redColor];
+    
+    UIImageView *imageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height)];
+    [imageView sd_setImageWithURL:[NSURL URLWithString:self.imgArr[self.currentIndex]]];
+    [self.view addSubview:imageView];
+    self.bgImageView = imageView;
+    UIBlurEffect *beffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+    UIVisualEffectView *view = [[UIVisualEffectView alloc]initWithEffect:beffect];
+    view.frame = self.bgImageView.frame;
+    [self.view addSubview:view];
+
     
 //    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(OnTapView)];
 //    [self.view addGestureRecognizer:tap];
@@ -46,6 +58,89 @@
     [self initScrollView];
     [self addLabels];
     [self setPicCurrentIndex:self.currentIndex];
+    
+    [self initTopView];
+    [self initCommentButton];
+}
+
+-(void)initCommentButton{
+    CGFloat commentBtnWid = 100;
+    CGFloat commentBtnHeg = 50;
+    UIButton *commentBtn = [[UIButton alloc]initWithFrame:CGRectMake(screen_width - commentBtnWid - 30, screen_height - commentBtnHeg - 40, commentBtnWid, commentBtnHeg)];
+    [commentBtn addTarget:self action:@selector(commentButtonClick) forControlEvents:UIControlEventTouchUpInside];
+    [commentBtn setTitle:@"评论0" forState:UIControlStateNormal];
+    [commentBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    commentBtn.titleLabel.font = [UIFont systemFontOfSize:18.0f];
+    [self.view addSubview:commentBtn];
+}
+-(void)initTopView{
+    UIView *navView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, screen_width, 64)];
+    [self.view addSubview:navView];
+    
+    UIButton *backButton = [[UIButton alloc]initWithFrame:CGRectMake(10, 20, 80, 44)];
+    [backButton setImage:[UIImage imageNamed:@"white-back"] forState:UIControlStateNormal];
+    [backButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [backButton setTitle:@"返回" forState:UIControlStateNormal];
+    [backButton addTarget:self action:@selector(backButtonClick) forControlEvents:UIControlEventTouchUpInside];
+    [navView addSubview:backButton];
+    
+    CGFloat viewX = 100 + 50;
+    CGFloat viewWid = (screen_width - viewX)/3;
+    UIButton *zanBtn = [[UIButton alloc]initWithFrame:CGRectMake(viewX, 20, viewWid, 44)];
+    [zanBtn addTarget:self action:@selector(zanBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+    UIImageView *imageView = [[UIImageView alloc]initWithFrame:CGRectMake((viewWid - 36)/2, 6, 36, 36)];
+    imageView.image = [UIImage imageNamed:@"gray-praise"];
+    [zanBtn addSubview:imageView];
+    
+    
+    [navView addSubview:zanBtn];
+    
+    UIButton *colBtn = [[UIButton alloc]initWithFrame:CGRectMake(viewX + viewWid, 20, viewWid, 44)];
+    [colBtn addTarget:self action:@selector(colBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+    [navView addSubview:colBtn];
+    UIImageView *imageView2 = [[UIImageView alloc]initWithFrame:CGRectMake((viewWid - 36)/2, 4, 36, 36)];
+    imageView2.image = [UIImage imageNamed:@"icon-startgray"];
+    [colBtn addSubview:imageView2];
+    
+    UIButton *shareBtn = [[UIButton alloc]initWithFrame:CGRectMake(viewX + viewWid * 2, 20, viewWid, 44)];
+    [shareBtn addTarget:self action:@selector(shareBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+    [navView addSubview:shareBtn];
+    UIImageView *imageView3 = [[UIImageView alloc]initWithFrame:CGRectMake((viewWid - 36)/2, 6, 36, 36)];
+    imageView3.image = [UIImage imageNamed:@"whiteShare"];
+    [shareBtn addSubview:imageView3];
+    
+}
+// 返回
+-(void)backButtonClick{
+    [self TapHiddenPhotoView];
+}
+
+// 点赞
+-(void)zanBtnClick:(UIButton *)sender{
+    UIImageView *imageView = (UIImageView *)sender.subviews[0];
+    
+    if (sender.selected) {
+        sender.selected = NO;
+        imageView.image = [UIImage imageNamed:@"gray-praise"];
+    }else{
+        sender.selected = YES;
+        imageView.image = [UIImage imageNamed:@"red-praise"];
+    }
+}
+// 收藏
+-(void)colBtnClick:(UIButton *)sender{
+    UIImageView *imageView = (UIImageView *)sender.subviews[0];
+    if (sender.selected) {
+        sender.selected = NO;
+        imageView.image = [UIImage imageNamed:@"icon-startgray"];
+    }else{
+        sender.selected = YES;
+        imageView.image = [UIImage imageNamed:@"red-start"];
+    }
+}
+// 分享
+-(void)shareBtnClick:(UIButton *)sender{
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -154,7 +249,38 @@
     int i = scrollView.contentOffset.x/screen_width+1;
     [self loadPhote:i-1];
     self.sliderLabel.text = [NSString stringWithFormat:@"%d/%lu",i,(unsigned long)self.imgArr.count];
+    [self.bgImageView sd_setImageWithURL:[NSURL URLWithString:self.imgArr[i - 1]]];
 }
+// 评论按钮的点击
+-(void)commentButtonClick{
+    
+    //    NSDictionary *dic = self.infoDic[0];
+    XJCommentListCtrl *commentList = [XJCommentListCtrl new];
+    //    commentList.imgId = [dic valueForKey:@"id"];
+    //    commentList.caseId = self.caseId;
+    //    commentList.numDelegate = self;
+    //    commentList.currentIndex = btn.tag;
+    //    commentList.commentNums = [dic[@"comments"] integerValue];
+    //    commentList.itemDic = [NSMutableDictionary dictionaryWithDictionary:self.infoDic[btn.tag]];
+    //    [RACObserve(commentList, commentCount) subscribeNext:^(id x) {
+    //        [self.infoDic[btn.tag] setValue:x forKey:@"comments"];
+    //    }];
+    if ([mSystemVersion floatValue] < 8.0) {
+        commentList.modalPresentationStyle = UIModalPresentationFullScreen;
+    }else
+    {
+        commentList.modalPresentationStyle = UIModalPresentationOverFullScreen;
+    }
+    
+    //    mViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self presentViewController:commentList
+                           animated:YES
+                         completion:NULL];
+    });
+}
+
 
 
 /*
