@@ -56,7 +56,7 @@
 //    [self.view addGestureRecognizer:tap];
 
     [self initScrollView];
-    [self addLabels];
+//    [self addLabels];
     [self setPicCurrentIndex:self.currentIndex];
     
     [self initTopView];
@@ -88,24 +88,31 @@
     CGFloat viewWid = (screen_width - viewX)/3;
     UIButton *zanBtn = [[UIButton alloc]initWithFrame:CGRectMake(viewX, 20, viewWid, 44)];
     [zanBtn addTarget:self action:@selector(zanBtnClick:) forControlEvents:UIControlEventTouchUpInside];
-    UIImageView *imageView = [[UIImageView alloc]initWithFrame:CGRectMake((viewWid - 36)/2, 6, 36, 36)];
+    [navView addSubview:zanBtn];
+    UIImageView *imageView = [[UIImageView alloc]initWithFrame:CGRectMake((viewWid - 26)/2, 11, 26, 26)];
     imageView.image = [UIImage imageNamed:@"gray-praise"];
     [zanBtn addSubview:imageView];
+    UILabel *label = [[UILabel alloc]initWithFrame:CGRectMake((viewWid - 26)/2 + 26 + 3, 0, 40, 44)];
+    label.text = @"0";
+    label.textColor = [UIColor whiteColor];
+    [zanBtn addSubview:label];
     
-    
-    [navView addSubview:zanBtn];
     
     UIButton *colBtn = [[UIButton alloc]initWithFrame:CGRectMake(viewX + viewWid, 20, viewWid, 44)];
     [colBtn addTarget:self action:@selector(colBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     [navView addSubview:colBtn];
-    UIImageView *imageView2 = [[UIImageView alloc]initWithFrame:CGRectMake((viewWid - 36)/2, 4, 36, 36)];
+    UIImageView *imageView2 = [[UIImageView alloc]initWithFrame:CGRectMake((viewWid - 26)/2, 9, 26, 26)];
     imageView2.image = [UIImage imageNamed:@"icon-startgray"];
     [colBtn addSubview:imageView2];
+    UILabel *label2 = [[UILabel alloc]initWithFrame:CGRectMake((viewWid - 26)/2 + 26 + 3, 0, 40, 44)];
+    label2.text = @"0";
+    label2.textColor = [UIColor whiteColor];
+    [colBtn addSubview:label2];
     
     UIButton *shareBtn = [[UIButton alloc]initWithFrame:CGRectMake(viewX + viewWid * 2, 20, viewWid, 44)];
     [shareBtn addTarget:self action:@selector(shareBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     [navView addSubview:shareBtn];
-    UIImageView *imageView3 = [[UIImageView alloc]initWithFrame:CGRectMake((viewWid - 36)/2, 6, 36, 36)];
+    UIImageView *imageView3 = [[UIImageView alloc]initWithFrame:CGRectMake((viewWid - 26)/2, 9, 26, 26)];
     imageView3.image = [UIImage imageNamed:@"whiteShare"];
     [shareBtn addSubview:imageView3];
     

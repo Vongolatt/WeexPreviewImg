@@ -15,6 +15,8 @@
  */
 @property(nonatomic, strong) NSMutableArray *imgArr;
 
+@property (nonatomic,strong) UIImageView *bgImageView;
+
 /**  加载图片的方式
  *
  */
