@@ -10,6 +10,10 @@
 //  BMCalendarComponent.m
 //
 #import "WXCustomEventModule.h"
+#import <WeexPluginLoader/WeexPluginLoader.h>
+
+WX_PlUGIN_EXPORT_MODULE(WeexPreview, WXCustomEventModule)
+
 @implementation WXCustomEventModule
 @synthesize weexInstance;
  // 将方法暴露出去
@@ -21,7 +25,7 @@
      if (!inputParams){
         return;
      }
-     NSLog(@"%@", inputParams)
+     NSLog(@"%@", inputParams);
  }
 @end
 

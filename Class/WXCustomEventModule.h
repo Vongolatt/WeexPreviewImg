@@ -1,7 +1,7 @@
  #import <Foundation/Foundation.h>
  #import <WeexSDK/WeexSDK.h>
  
- @interface HMGesUnLockModule : NSObject<WXModuleProtocol>
+ @interface WXCustomEventModule : NSObject<WXModuleProtocol>
 
  @end
 
