@@ -11,7 +11,7 @@
 #import "MBProgressHUD.h"
 #import "PhotoView.h"
 #import "XJCommentListCtrl.h"
-
+#import <BMGlobalEventManager.h>
 #define mSystemVersion   ([[UIDevice currentDevice] systemVersion])
 #define screen_width    [UIScreen mainScreen].bounds.size.width
 #define screen_height   [UIScreen mainScreen].bounds.size.height
@@ -133,6 +133,9 @@
         sender.selected = YES;
         imageView.image = [UIImage imageNamed:@"red-praise"];
     }
+    NSMutableDictionary * dic = [NSMutableDictionary dictionary];
+    [dic setValue:@"1" forKey:@"praise"];
+    [BMGlobalEventManager pushMessage:dic appLaunchedByNotification:YES];
 }
 // 收藏
 -(void)colBtnClick:(UIButton *)sender{
@@ -144,10 +147,15 @@
         sender.selected = YES;
         imageView.image = [UIImage imageNamed:@"red-start"];
     }
+    NSMutableDictionary * dic = [NSMutableDictionary dictionary];
+    [dic setValue:@"1" forKey:@"collect"];
+    [BMGlobalEventManager pushMessage:dic appLaunchedByNotification:YES];
 }
 // 分享
 -(void)shareBtnClick:(UIButton *)sender{
-    
+    NSMutableDictionary * dic = [NSMutableDictionary dictionary];
+    [dic setValue:@"1" forKey:@"share"];
+    [BMGlobalEventManager pushMessage:dic appLaunchedByNotification:YES];
 }
 
 - (void)didReceiveMemoryWarning {

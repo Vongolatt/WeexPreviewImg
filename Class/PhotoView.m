@@ -14,6 +14,7 @@
 {
     UIScrollView *_scrollView;
     MBProgressHUD *hud;
+    NSString * _photoURL;
 }
 
 @end
@@ -23,6 +24,7 @@
 -(id)initWithFrame:(CGRect)frame withPhotoUrl:(NSString *)photoUrl{
     self = [super initWithFrame:frame];
     if (self) {
+        _photoURL = photoUrl;
         //添加scrollView
         _scrollView = [[UIScrollView alloc] initWithFrame:self.bounds];
         _scrollView.delegate = self;
@@ -56,6 +58,9 @@
         [_scrollView addSubview:self.imageView];
         
         //添加手势
+        UILongPressGestureRecognizer * longPressGesture =[[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(cellLongPress:)];
+        
+        longPressGesture.minimumPressDuration=2.0f;//设置长按 时间
         UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingleTap:)];
         UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTap:)];
         UITapGestureRecognizer *twoFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTwoFingerTap:)];
@@ -69,7 +74,7 @@
         [self.imageView addGestureRecognizer:doubleTap];
         [self.imageView addGestureRecognizer:twoFingerTap];
         [singleTap requireGestureRecognizerToFail:doubleTap];//如果双击了，则不响应单击事件
-        
+        [self.imageView addGestureRecognizer:longPressGesture];
         [_scrollView setZoomScale:1];
     }
     return self;
@@ -96,19 +101,22 @@
         [_scrollView addSubview:self.imageView];
         
         //添加手势
-        UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingleTap:)];
-        UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTap:)];
-        UITapGestureRecognizer *twoFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTwoFingerTap:)];
+//        UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingleTap:)];
+//        UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTap:)];
+//        UITapGestureRecognizer *twoFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTwoFingerTap:)];
         
-        singleTap.numberOfTapsRequired = 1;
-        singleTap.numberOfTouchesRequired = 1;
-        doubleTap.numberOfTapsRequired = 2;//需要点两下
-        twoFingerTap.numberOfTouchesRequired = 2;//需要两个手指touch
         
-        [self.imageView addGestureRecognizer:singleTap];
-        [self.imageView addGestureRecognizer:doubleTap];
-        [self.imageView addGestureRecognizer:twoFingerTap];
-        [singleTap requireGestureRecognizerToFail:doubleTap];//如果双击了，则不响应单击事件
+        
+        
+//        singleTap.numberOfTapsRequired = 1;
+//        singleTap.numberOfTouchesRequired = 1;
+//        doubleTap.numberOfTapsRequired = 2;//需要点两下
+//        twoFingerTap.numberOfTouchesRequired = 2;//需要两个手指touch
+        
+//        [self.imageView addGestureRecognizer:singleTap];
+//        [self.imageView addGestureRecognizer:doubleTap];
+//        [self.imageView addGestureRecognizer:twoFingerTap];
+//        [singleTap requireGestureRecognizerToFail:doubleTap];//如果双击了，则不响应单击事件
         
         [_scrollView setZoomScale:1];
     }
@@ -127,15 +135,34 @@
     [scrollView setZoomScale:scale animated:NO];
 }
 
+-(void)cellLongPress:(UILongPressGestureRecognizer *)longRecognizer{
+    NSLog(@"长按");
+    if (longRecognizer.state==UIGestureRecognizerStateBegan) {
+        
+        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"温馨提示" message:@"确定保存图片?" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+        [alert show];
+    }
+}
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    NSString *btnTitle = [alertView buttonTitleAtIndex:buttonIndex];
+    if ([btnTitle isEqualToString:@"确定"]) {
+        UIImageWriteToSavedPhotosAlbum(self.imageView.image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
+    }
+}
 
 #pragma mark - 图片的点击，touch事件
 -(void)handleSingleTap:(UITapGestureRecognizer *)gestureRecognizer{
     NSLog(@"单击");
+    NSLog(@"%@",_photoURL);
+    
+//    NSLog(@"%@",gestureRecognizer.);
     // if (gestureRecognizer.numberOfTapsRequired == 1) {
     //     [self.delegate TapHiddenPhotoView];
     // }
 }
-
+- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo{
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"温馨提示" message:@"保存成功" delegate:self cancelButtonTitle:nil otherButtonTitles:@"", nil];
+}
 -(void)handleDoubleTap:(UITapGestureRecognizer *)gestureRecognizer{
     NSLog(@"双击");
     if (gestureRecognizer.numberOfTapsRequired == 2) {
