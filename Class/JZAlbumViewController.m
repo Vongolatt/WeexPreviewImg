@@ -154,6 +154,7 @@
 // 分享
 -(void)shareBtnClick:(UIButton *)sender{
     NSMutableDictionary * dic = [NSMutableDictionary dictionary];
+    [self TapHiddenPhotoView];
     [dic setValue:@"1" forKey:@"share"];
     [BMGlobalEventManager pushMessage:dic appLaunchedByNotification:YES];
 }
