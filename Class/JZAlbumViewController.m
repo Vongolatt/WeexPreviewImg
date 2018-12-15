@@ -11,7 +11,7 @@
 #import "MBProgressHUD.h"
 #import "PhotoView.h"
 #import "XJCommentListCtrl.h"
-#import <BMGlobalEventManager.h>
+#import "BMGlobalEventManager.h"
 #define mSystemVersion   ([[UIDevice currentDevice] systemVersion])
 #define screen_width    [UIScreen mainScreen].bounds.size.width
 #define screen_height   [UIScreen mainScreen].bounds.size.height

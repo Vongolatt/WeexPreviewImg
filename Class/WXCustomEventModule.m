@@ -10,7 +10,7 @@
 //  BMCalendarComponent.m
 //
 #import "WXCustomEventModule.h"
-#import <WeexPluginLoader/WeexPluginLoader.h>
+#import <WeexPluginLoader/WeexPluginLoader/WeexPluginLoader.h>
 #import "JZAlbumViewController.h"
 
 WX_PlUGIN_EXPORT_MODULE(WeexPreview, WXCustomEventModule)
